@@ -5,6 +5,7 @@
 #include "tim.h"
 
 
+//控制结构体 
 typedef struct {
     volatile uint32_t remain_pulses;  // 剩余脉冲数
     TIM_HandleTypeDef *htim;          // 对应定时器
