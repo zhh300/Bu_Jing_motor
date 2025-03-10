@@ -1,46 +1,46 @@
 #include "BuJin.h"
 
 
-PWM_Counter pwm_ctr[4];  // å››è·¯PWMè®¡æ•°å™¨
+PWM_Counter pwm_ctr[4];  // ËÄÂ·PWM¼ÆÊıÆ÷
 
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
   if(htim->Instance == TIM1){
-    // åœ¨æ­¤å¤„æ·»åŠ è„‰å†²è®¡æ•°é€»è¾‘
-    if(pwm_ctr[0]ã€‚remain_pulses > 0){
-      pwm_ctr[0]ã€‚remain_pulses--;
-      if(pwm_ctr[0]ã€‚remain_pulses == 0){
+    // ÔÚ´Ë´¦Ìí¼ÓÂö³å¼ÆÊıÂß¼­
+    if(pwm_ctr[0].remain_pulses > 0){
+      pwm_ctr[0].remain_pulses--;
+      if(pwm_ctr[0].remain_pulses == 0){
         HAL_TIM_PWM_Stop(htim, TIM_CHANNEL_1);
       }
     }
   }
 	
 	if(htim->Instance == TIM2){
-    // åœ¨æ­¤å¤„æ·»åŠ è„‰å†²è®¡æ•°é€»è¾‘
-    if(pwm_ctr[1]ã€‚remain_pulses > 0){
-      pwm_ctr[1]ã€‚remain_pulses--;
-      if(pwm_ctr[1]ã€‚remain_pulses == 0){
+    // ÔÚ´Ë´¦Ìí¼ÓÂö³å¼ÆÊıÂß¼­
+    if(pwm_ctr[1].remain_pulses > 0){
+      pwm_ctr[1].remain_pulses--;
+      if(pwm_ctr[1].remain_pulses == 0){
         HAL_TIM_PWM_Stop(htim, TIM_CHANNEL_1);
       }
     }
   }
 	
 	if(htim->Instance == TIM3){
-    // åœ¨æ­¤å¤„æ·»åŠ è„‰å†²è®¡æ•°é€»è¾‘
-    if(pwm_ctr[2]ã€‚remain_pulses > 0){
-      pwm_ctr[2]ã€‚remain_pulses--;
-      if(pwm_ctr[2]ã€‚remain_pulses == 0){
+    // ÔÚ´Ë´¦Ìí¼ÓÂö³å¼ÆÊıÂß¼­
+    if(pwm_ctr[2].remain_pulses > 0){
+      pwm_ctr[2].remain_pulses--;
+      if(pwm_ctr[2].remain_pulses == 0){
         HAL_TIM_PWM_Stop(htim, TIM_CHANNEL_1);
       }
     }
   }
 	
 	if(htim->Instance == TIM4){
-    // åœ¨æ­¤å¤„æ·»åŠ è„‰å†²è®¡æ•°é€»è¾‘
-    if(pwm_ctr[3]ã€‚remain_pulses > 0){
-      pwm_ctr[3]ã€‚remain_pulses--;
-      if(pwm_ctr[3]ã€‚remain_pulses == 0){
+    // ÔÚ´Ë´¦Ìí¼ÓÂö³å¼ÆÊıÂß¼­
+    if(pwm_ctr[3].remain_pulses > 0){
+      pwm_ctr[3].remain_pulses--;
+      if(pwm_ctr[3].remain_pulses == 0){
         HAL_TIM_PWM_Stop(htim, TIM_CHANNEL_1);
       }
     }
@@ -50,35 +50,35 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 
 
 void Set_PWM_Frequency(TIM_HandleTypeDef *htim, uint32_t Channel, uint32_t frequency) {
-    uint32_t timer_clock = 1000000; // å®šæ—¶å™¨æ—¶é’Ÿ=1MHzï¼ˆPrescaler=71ï¼‰
+    uint32_t timer_clock = 1000000; // ¶¨Ê±Æ÷Ê±ÖÓ=1MHz£¨Prescaler=71£©
     uint32_t arr = (timer_clock / frequency) - 1;
     uint32_t ccr = (arr + 1) / 2 - 1;
     
-    HAL_TIM_PWM_Stop(htim, Channel);       // åœæ­¢PWM
-    htim->Instance->ARR = arr;             // è®¾ç½®ARR
-    __HAL_TIM_SET_COMPARE(htim, Channel, ccr); // è®¾ç½®CCR
-    HAL_TIM_PWM_Start(htim, Channel);      // å¯åŠ¨PWM
+    HAL_TIM_PWM_Stop(htim, Channel);       // Í£Ö¹PWM
+    htim->Instance->ARR = arr;             // ÉèÖÃARR
+    __HAL_TIM_SET_COMPARE(htim, Channel, ccr); // ÉèÖÃCCR
+    HAL_TIM_PWM_Start(htim, Channel);      // Æô¶¯PWM
 }
 
 void Output_Pulse(TIM_HandleTypeDef *htim, uint32_t Channel, uint32_t pulse_num, uint32_t frequency)
 {
     uint8_t index = 0;
     
-    // ç¡®å®šå®šæ—¶å™¨ç´¢å¼•
+    // È·¶¨¶¨Ê±Æ÷Ë÷Òı
     if (htim->Instance == TIM1) index = 0;
     else if (htim->Instance == TIM2) index = 1;
     else if (htim->Instance == TIM3) index = 2;
     else if (htim->Instance == TIM4) index = 3;
     
-    // é…ç½®é¢‘ç‡ï¼ˆä¿æŒåŸæœ‰é¢‘ç‡è®¾ç½®é€»è¾‘ï¼‰
+    // ÅäÖÃÆµÂÊ£¨±£³ÖÔ­ÓĞÆµÂÊÉèÖÃÂß¼­£©
     Set_PWM_Frequency(htim, Channel, frequency);
     
-    // åˆå§‹åŒ–è®¡æ•°å™¨
-    pwm_ctr[index]ã€‚htim = htim;
-    pwm_ctr[index]ã€‚channel = Channel;
-    pwm_ctr[index]ã€‚remain_pulses = pulse_num;
+    // ³õÊ¼»¯¼ÆÊıÆ÷
+    pwm_ctr[index].htim = htim;
+    pwm_ctr[index].channel = Channel;
+    pwm_ctr[index].remain_pulses = pulse_num;
     
-    // å¸¦ä¸­æ–­å¯åŠ¨PWM
+    // ´øÖĞ¶ÏÆô¶¯PWM
     HAL_TIM_PWM_Start_IT(htim, Channel);
 }
 
